@@ -1,0 +1,30 @@
+app:
+  build: ./
+  volumes:
+    - ./:/var/www/app
+  links:
+    - redis
+  ports:
+    - 3000:3000
+  environment:
+    - REDIS_URL=redis://redis
+    - NODE_ENV=development
+    - PORT=3000
+    - API_KEY={PUT_YOUR_API_KEY_HERE}
+  command: sh -c 'npm i && npm start'
+
+redis:
+  image: redis
+  container_name: redis
+  expose:
+    - 6379
+
+# runs redis-comander UI on http://localhost:8081/
+redis-commander:
+  image: rediscommander/redis-commander:latest
+  environment:
+    - REDIS_HOSTS=local:redis:6379
+  ports:
+    - 8081:8081
+  links:
+    - redis
